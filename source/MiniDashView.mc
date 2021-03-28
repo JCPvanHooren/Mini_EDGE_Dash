@@ -40,6 +40,7 @@ class MiniDashView extends WatchUi.DataField {
 	hidden var hr;
 	hidden var hrZone;
 	hidden var cadence = 0;
+	hidden var power = 0;
 	hidden var blink = true;
 	
 	// Right Section Variables
@@ -110,9 +111,11 @@ class MiniDashView extends WatchUi.DataField {
     // guarantee that compute() will be called before onUpdate().
     function compute(info) {
     	
+		System.println("Inside Compute");
     	// Current Values
     	hr = info.currentHeartRate;
-    	cadence = (info.currentCadence != null) ? (info.currentCadence) : (0);
+    	cadence = info.currentCadence;
+		power = info.currentPower;
     	speed = (info.currentSpeed != null) ? (info.currentSpeed) : (0);
     	currentTime = Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT);
     	altitude = info.altitude;
@@ -165,6 +168,11 @@ class MiniDashView extends WatchUi.DataField {
     // Display the value you computed here. This will be called
     // once a second when the data field is visible.
     function onUpdate(dc) {
+		System.println("onUpdate");
+		System.print("Current Cadence: ");
+		System.println(cadence);
+		System.print("Current Power: ");
+		System.println(power);
     	// Get Generic Variables
     	var bgColor = getBackgroundColor();
     	var width = dc.getWidth();
@@ -257,7 +265,14 @@ class MiniDashView extends WatchUi.DataField {
     	justification = Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER;
     	dc.setColor((bgColor == Gfx.COLOR_BLACK) ? Gfx.COLOR_WHITE : Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
     	dc.drawText(x, y1, font, (hr != null) ? hr : "-", justification);
-    	dc.drawText(x, y2, font, (cadence != 0) ? cadence : "-", justification);
+		if (power) {
+			dc.drawText(x, y2, font, power, justification);
+		} else if (cadence) {
+			dc.drawText(x, y2, font, cadence, justification);
+		} else {
+			dc.drawText(x, y2, font, '-', justification);
+		}
+
     	var speedStr = (speed != 0) ? (speed * speedConversion).toNumber() : "-";
     	
     	if ((grade == 0 and speed == 0) or grade.abs() >= climbCat3) {
