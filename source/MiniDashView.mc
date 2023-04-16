@@ -362,8 +362,8 @@ class MiniDashView extends WatchUi.DataField {
 	    	var speedDegree = 0;
 	    	var avgSpeedDegree = 0;
 	    	var arc = width / 5 - 10;
-	    	var h;
-	    	var v;
+	    	var h = null;
+	    	var v = null;
 	    	if (maxSpeed != 0) {
 	    		if (speed != 0) {speedDegree = 180 - speed / maxSpeed * 180;}
 	    		if (avgSpeed != 0) {
